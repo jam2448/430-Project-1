@@ -1,0 +1,27 @@
+{
+  "name": "430-project-1",
+  "version": "1.0.0",
+  "description": "this is project 1 for IGME 430",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\"",
+    "nodemon": "nodemon --watch ./src ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jam2448/430-Project-1.git"
+  },
+  "author": "Jarin Moses",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/jam2448/430-Project-1/issues"
+  },
+  "homepage": "https://github.com/jam2448/430-Project-1#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0"
+  }
+}
