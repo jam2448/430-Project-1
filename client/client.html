@@ -17,11 +17,11 @@
           break;
 
         case 201:
-          content.innerHTML = `<b>Created User</b>`
+          content.innerHTML = `<b>Created Country</b>`
           break;
 
         case 204:
-          content.innerHTML = `<b>Updated User (No Content)</b>`
+          content.innerHTML = `<b>Updated Country (No Content)</b>`
           break;
 
         case 400:
@@ -44,7 +44,7 @@
           const stringedData = JSON.stringify(obj.users);
           content.innerHTML += `<p>${stringedData}</p>`;
 
-        } 
+        }
         else if (obj.message) {
 
           content.innerHTML += `<p>${obj.message}</p>`;
@@ -75,14 +75,41 @@
 
     };
 
-    const sendPost = async (nameForm) => {
-      const url = nameForm.getAttribute('action');
-      const method = nameForm.getAttribute('method');
-      const name = nameForm.querySelector('#nameField').value;
-      const age = nameForm.querySelector('#ageField').value;
+    const sendCountry = async (countryForm) => {
+      const url = countryForm.getAttribute('action');
+      const method = countryForm.getAttribute('method');
+      const name = countryForm.querySelector('#nameField').value;
+      const capital = countryForm.querySelector('#capitalField').value;
+      const currency = countryForm.querySelector('#currencyField').value;
 
       //build the data string
-      let formData = JSON.stringify({ name, age });
+      let formData = JSON.stringify({ name, capital, currency });
+
+      const response = await fetch(url, {
+        method: method,
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': formData.length,
+          'Accept': 'application/json',
+        },
+
+        body: formData,
+      });
+
+      handleResponse(response);
+
+    };
+
+    const sendNationality = async (nationalityForm) => {
+      const url = nationalityForm.getAttribute('action');
+      const method = nationalityForm.getAttribute('method');
+      const name = nationalityForm.querySelector('#nameField').value;
+      const nationality = nationalityForm.querySelector('#nationalityField').value;
+      const dish = nationalityForm.querySelector('#dishField').value;
+
+      //build the data string
+      let formData = JSON.stringify({ name, nationality, dish });
 
       const response = await fetch(url, {
         method: method,
@@ -101,23 +128,32 @@
     };
 
     const init = () => {
-      const nameForm = document.querySelector('#nameForm');
+      const countryForm = document.querySelector('#countryForm');
+      const nationalityForm = document.querySelector('#nationalityForm');
       const userForm = document.querySelector('#userForm');
 
-      const addUser = (e) => {
+      //post requests: add country and nationality
+      const addCountry = (e) => {
         e.preventDefault();
-        sendPost(nameForm);
+        sendCountry(countryForm);
         return false;
       }
 
-      const getUsers = (e) => {
+      const addNationality = (e) => {
         e.preventDefault();
-        requestUpdate(userForm);
+        sendNationality(nationalityForm);
         return false;
       }
 
-      nameForm.addEventListener('submit', addUser);
-      userForm.addEventListener('submit', getUsers); //call get users when the button is clicked
+      // const getUsers = (e) => {
+      //   e.preventDefault();
+      //   requestUpdate(userForm);
+      //   return false;
+      // }
+
+      countryForm.addEventListener('submit', addCountry);
+      nationalityForm.addEventListener('submit', addNationality);
+      // userForm.addEventListener('submit', getUsers); //call get users when the button is clicked
 
 
     };
@@ -129,24 +165,45 @@
 
 <body>
   <section id="top">
-    <h3>POST Status Code Tests</h3>
-    <form id="nameForm" action="/addUser" method="post">
-      <label for="name">Name: </label>
+    <h3>Country API Application</h3>
+    <form id="countryForm" action="/addCountry" method="post">
+      <label for="name">Country Name: </label>
       <input id="nameField" type="text" name="name" />
-      <label for="age">Age: </label>
-      <input id="ageField" type="number" name="age" min="0" max="100" step="1" />
-      <input type="submit" value="Add User" />
+      <label for="capital">Capital: </label>
+      <input id="capitalField" type="text" name="capital" />
+      <label for="currency">Currency: </label>
+      <input id="currencyField" type="text" name="currency" />
+      <input type="submit" value="Add Country" />
     </form>
-    <form id="userForm" action="/getUsers" method="get">
+
+    <form id="nationalityForm" action="/addNationality" method="post">
+      <label for="name">Country Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="nationality">Nationality: </label>
+      <input id="nationalityField" type="text" name="nationality" />
+      <label for="dish">National Dish: </label>
+      <input id="dishField" type="text" name="dish" />
+      <input type="submit" value="Add Nationality & Dish" />
+    </form>
+
+
+    <form id="userForm" action="/getContinent" method="get">
       <select id='urlField'>
-        <option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
+        <option value='americas'>Americas</option>
+        <option value='africa'>Africa </option>
+        <option value='antartica'>Antartica</option>
+        <option value='asia'>Asia</option>
+        <option value='eurpoe'>Eurpoe</option>
+        <option value='oceania'>Oceania</option>
+
       </select>
+
       <select id="methodSelect">
         <option value="get">GET</option>
         <option value="head">HEAD</option>
       </select>
-      <input type="submit" value="Get User" />
+      <input type="submit" value="Get Region" />
+      <input type="submit" value="Get All Countries" />
     </form>
   </section>
   <section id="content">

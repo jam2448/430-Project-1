@@ -40,30 +40,42 @@ const parseBody = (request, response, handler) => {
     });
 };
 
+
+//handle all of the post requests here 
 const handlePost = (request, response, parsedURL) => {
 
-    if (parsedURL.pathname === '/addUser') {
-        parseBody(request, response, responseHandler.addUser);
+    if (parsedURL.pathname === '/addCountry') {
+        parseBody(request, response, responseHandler.addCountry);
+    }
+    else if( parsedURL.pathname === '/addNationality'){
+        parseBody(request,response, responseHandler.addNationality);
     }
 };
 
+//handle all of the get requests here
 const handleGet = (request, response, parsedURL) => {
 
     if (parsedURL.pathname === '/style.css') {
         htmlHandler.getCSS(request, response);
     }
-    else if (parsedURL.pathname === '/getUsers') {
-        responseHandler.getUsers(request, response);
+    else if (parsedURL.pathname === '/getReigon') {
+        responseHandler.getReigon(request, response);
     }
-    else {
+    else if(parsedURL.pathname === '/getCountry') {
+        responseHandler.getCountry(request, response);
+    }
+    else if(parsedURL.pathname === '/getAllCountries'){
+        responseHandler.getAllCountries(request, response);
+    }
+    else if(parsedURL.pathname === '/getCurrencies'){
+        responseHandler.getCurrencies(request, response);
+    }
+    else if(parsedURL.pathname === '/'){
         htmlHandler.getIndex(request, response);
     }
-    // else if(parsedURL.pathname === '/notReal'){
-    //     responseHandler.notReal(request, response);
-    // }
-    // else {
-    //     responseHandler.notReal(request, response);
-    // }
+    else {
+        responseHandler.notReal(request, response);
+    }
 
 };
 
