@@ -58,14 +58,14 @@ const handleGet = (request, response, parsedURL) => {
     if (parsedURL.pathname === '/style.css') {
         htmlHandler.getCSS(request, response);
     }
-    else if (parsedURL.pathname === '/getReigon') {
-        responseHandler.getReigon(request, response);
+    else if (parsedURL.pathname === '/getRegion') {
+        responseHandler.getRegion(request, response);
     }
     else if(parsedURL.pathname === '/getCountry') {
         responseHandler.getCountry(request, response);
     }
-    else if(parsedURL.pathname === '/getAllCountries'){
-        responseHandler.getAllCountries(request, response);
+    else if(parsedURL.pathname === '/getCountries'){
+        responseHandler.getCountries(request, response);
     }
     else if(parsedURL.pathname === '/getCurrencies'){
         responseHandler.getCurrencies(request, response);
@@ -83,6 +83,8 @@ const onRequest = (request, response) => {
 
     const protocol = request.connection.encrypted ? 'https' : 'http';
     const parsedURL = new URL(request.url, `${protocol}://${request.headers.host}`);
+
+    request.query = Object.fromEntries(parsedURL.searchParams);
 
     if (request.method === 'POST') {
         handlePost(request, response, parsedURL);

@@ -29,11 +29,28 @@ const respondJSON = (request, response, status, object) => {
 
 //gets the requested continent that the user wants 
 //  and returns all of the counties within that continent 
-const getReigon = (request, response) => {
+const getRegion = (request, response) => {
 
-    const responseJSON = {
-    };
+    responseJSON = {
+        message: 'you did not get the response you were looking for',
+    }
+    //get the selected region from the query
+    const selectedRegion = request.query.region;
 
+    const filteredCountries = countries.filter(country => {
+        return country.region === selectedRegion //if the region matches then return them
+    });
+
+    //keep wanted information in a new list
+    const responseJSON = filteredList.map(country => ({
+        name: country.name,
+        capital: country.capital,
+        region: country.region,
+        nationality: country.nationality,
+        currency: country.finance.currency_name,
+    }));
+
+    
     return respondJSON(request, response, 200, responseJSON);
 
 };
@@ -48,7 +65,7 @@ const getCountry = (request, response) => {
 };
 
 //returns the name of all countries in the list with data
-const getAllCountries = (request, response) => {
+const getCountries = (request, response) => {
 
     const responseJSON = {
         countries,
@@ -162,9 +179,9 @@ const notReal = (request, response) => {
 
 
 module.exports = {
-    getReigon,
+    getRegion,
     getCountry,
-    getAllCountries,
+    getCountries,
     getCurrencies,
     addCountry,
     addNationality,

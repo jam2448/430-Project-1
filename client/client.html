@@ -130,7 +130,7 @@
     const init = () => {
       const countryForm = document.querySelector('#countryForm');
       const nationalityForm = document.querySelector('#nationalityForm');
-      const userForm = document.querySelector('#userForm');
+      const regionForm = document.querySelector('#regionForm');
 
       //post requests: add country and nationality
       const addCountry = (e) => {
@@ -145,14 +145,15 @@
         return false;
       }
 
-      // const getUsers = (e) => {
-      //   e.preventDefault();
-      //   requestUpdate(userForm);
-      //   return false;
-      // }
+      const getRegion = (e) => {
+        e.preventDefault();
+        requestUpdate(regionForm);
+        return false;
+      }
 
       countryForm.addEventListener('submit', addCountry);
       nationalityForm.addEventListener('submit', addNationality);
+      regionForm.addEventListener('submit', getRegion);
       // userForm.addEventListener('submit', getUsers); //call get users when the button is clicked
 
 
@@ -165,45 +166,148 @@
 
 <body>
   <section id="top">
-    <h3>Country API Application</h3>
-    <form id="countryForm" action="/addCountry" method="post">
-      <label for="name">Country Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="capital">Capital: </label>
-      <input id="capitalField" type="text" name="capital" />
-      <label for="currency">Currency: </label>
-      <input id="currencyField" type="text" name="currency" />
-      <input type="submit" value="Add Country" />
-    </form>
+    <h1>Country API Application</h1>
 
-    <form id="nationalityForm" action="/addNationality" method="post">
-      <label for="name">Country Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="nationality">Nationality: </label>
-      <input id="nationalityField" type="text" name="nationality" />
-      <label for="dish">National Dish: </label>
-      <input id="dishField" type="text" name="dish" />
-      <input type="submit" value="Add Nationality & Dish" />
-    </form>
+    <div id="addCountryBlock">
+      <h3>/addCountry</h3>
+      <h4>Type: POST</h4>
+      <h5>Create or the information of a country </h5>
 
 
-    <form id="userForm" action="/getContinent" method="get">
-      <select id='urlField'>
-        <option value='americas'>Americas</option>
-        <option value='africa'>Africa </option>
-        <option value='antartica'>Antartica</option>
-        <option value='asia'>Asia</option>
-        <option value='eurpoe'>Eurpoe</option>
-        <option value='oceania'>Oceania</option>
 
-      </select>
+      <form id="countryForm" action="/addCountry" method="post">
+        <label for="name">Country Name: </label>
+        <input id="nameField" type="text" name="name" />
+        <br>
+        <label for="capital">Capital: </label>
+        <input id="capitalField" type="text" name="capital" />
+        <br>
+        <label for="currency">Currency: </label>
+        <input id="currencyField" type="text" name="currency" />
+        <br>
+        <input type="submit" value="Send Request" />
+      </form>
 
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get Region" />
-      <input type="submit" value="Get All Countries" />
+    </div>
+
+    <hr>
+
+    <div id="addNationalityBlock">
+      <h3>/addNationality</h3>
+      <h4>Type: POST</h4>
+      <h5>Create/Update the nationality of a country and/or give a country a national dish </h5>
+
+      <form id="nationalityForm" action="/addNationality" method="post">
+        <label for="name">Country Name: </label>
+        <input id="nameField" type="text" name="name" />
+        <br>
+        <label for="nationality">Nationality: </label>
+        <input id="nationalityField" type="text" name="nationality" />
+        <br>
+        <label for="dish">National Dish: </label>
+        <input id="dishField" type="text" name="dish" />
+        <br>
+        <input type="submit" value="Send Request" />
+      </form>
+
+    </div>
+
+
+    <hr>
+
+    <div id="getRegionBlock">
+      <h3>/getReigon</h3>
+      <h4>Type: GET</h4>
+      <h5>Get all the countries from a specific region </h5>
+
+      <form id="regionForm" action="/getRegion" method="get">
+        <select id='urlField'>
+          <option value='americas'>Americas</option>
+          <option value='africa'>Africa </option>
+          <option value='antartica'>Antartica</option>
+          <option value='asia'>Asia</option>
+          <option value='eurpoe'>Eurpoe</option>
+          <option value='oceania'>Oceania</option>
+        </select>
+
+        <select id="methodSelect">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
+
+
+        <input type="submit" value="Send Request" />
+      </form>
+
+
+
+    </div>
+
+    <hr>
+
+    <div id="getCountryBlock">
+      <h3>/getCountry</h3>
+      <h4>Type: GET</h4>
+      <h5>Get information about a single country </h5>
+
+      <form id="getCountry" action="/getCountry" method="get">
+
+        <label for="name">Country Name: </label>
+        <input id="countryName" type="text" name="name" />
+        <input type="submit" value="Send Request" />
+
+      </form>
+
+    </div>
+
+    <hr>
+
+    <div id="getCountriesBlock">
+      <h3>/getCountries</h3>
+      <h4>Type: GET</h4>
+      <h5>Gets all the countries</h5>
+
+      <form id="getCountries" action="/getCountries" method="get">
+
+        <label for="name">Country Name: </label>
+        <input id="countryName" type="text" name="name" />
+        <br>
+        <label for="timeZone">Time Zone (Abbreviation): </label>
+        <input id="timeZone" type="text" name="timeZone" />
+        <br>
+        <label for="dish">National Dish: </label>
+        <input id="dishField" type="text" name="dish" />
+        <br>
+        <input type="submit" value="Send Request" />
+
+      </form>
+
+
+    </div>
+
+    <hr>
+
+    <div id="getCurrenciesBlock">
+      <h3>/getCurrencies</h3>
+      <h4>Type: GET</h4>
+      <h5>Returns all countries that use the same currency</h5>
+
+      <form id="getCurrencies" action="/getCurrencies" method="get">
+
+        <label for="currencyName">Currency Name: </label>
+        <input id="currencyName" type="text" name="currencyName" />
+        <br>
+        <label for="currencySymbol">Currency Symbol: </label>
+        <input id="currencySymbol" type="text" name="currencySymbol" />
+        <br>
+        <input type="submit" value="Send Request" />
+
+      </form>
+
+
+    </div>
+
+
     </form>
   </section>
   <section id="content">
