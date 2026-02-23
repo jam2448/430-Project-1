@@ -34,6 +34,8 @@ const getReigon = (request, response) => {
     const responseJSON = {
     };
 
+    return respondJSON(request, response, 200, responseJSON);
+
 };
 
 //gets the requested country and prints out the ocuntry and somoe statistics about it
@@ -41,12 +43,14 @@ const getCountry = (request, response) => {
 
     const responseJSON = {};
 
+    return respondJSON(request, response, 200, responseJSON);
+
 };
 
 //returns the name of all countries in the list with data
 const getAllCountries = (request, response) => {
 
-    const respondJSON = {
+    const responseJSON = {
         countries,
 
     }
@@ -57,6 +61,10 @@ const getAllCountries = (request, response) => {
 
 //returns all of the currencies used in the world
 const getCurrencies = (request, response) => {
+
+    const responseJSON = {};
+
+    return respondJSON(request, response, 200, responseJSON);
 
 
 };
