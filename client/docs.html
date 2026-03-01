@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/docsCSS.css">
+    <title>Countries API Documentation</title>
+</head>
+
+<body>
+
+    <a href="client.html">Try the Application Here</a>
+    <h1>Countries API Documentation </h1>
+
+    <div id="docInfo">
+
+        <section>
+            <h2>/addCountry</h2>
+
+            <p><strong>Description:</strong>Creates a new country and adds it to the dataset.</p>
+
+            <h3>Method Type: POST</h3>
+
+            <h3>Body Params</h3>
+            <p>Country Name [required]: (String) - The name of the country</p>
+            <p>Capital [required]: (String) - The official capital of the country</p>
+            <p>Currency [required]: (String) - The official currency of the country</p>
+
+            <h3>Returns</h3>
+            <p>A JSON object that with the entered information representing a new country</p>
+            <p> Format: {'name': "ENTERED NAME", 'capital': "ENTERED CAPITAL",
+                'currency': "ENTERED CURRENCY"}</p>
+
+            <h3>Examples</h3>
+            <div>
+                <p><strong>Request:</strong>/addCountry</p>
+                <p>Body: {"name":"Jupiter","capital":"Red Eye","currency":"Moons"}</p>
+                <p>Result: {"name":"Jupiter","capital":"Red Eye","currency":"Moons"}</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/addCountry</p>
+                <p>Body: {"name":"Jupiter","capital":"Red Eye","currency":""}</p>
+                <p>Result: {"message":"400 Error: Name, Capital, and Currency are all
+                    required to create country"}
+                </p>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>/addNationality</h2>
+
+            <p><strong>Description:</strong>Adds/Updates unique information about a country.</p>
+
+            <h3>Method Type: POST</h3>
+
+            <h3>Body Params</h3>
+            <p>Country Name [required]: (String) - The name of the country</p>
+            <p>Nationality [required]: (String) - What residents of the country are called</p>
+            <p>National Dish [required]: (String) - The most known dish of the country</p>
+
+            <h3>Returns</h3>
+            <p>A JSON object with the entered information representing the added information </p>
+            <p> 
+                Format: {'name': "ENTERED NAME",'nationality': "ENTERED NATIONALITY",
+                'dish': "ENTERED DISH"}
+            </p>
+
+            <h3>Examples</h3>
+            <div>
+                <p><strong>Request:</strong>/addNationality</p>
+                 <p><strong>Context:</strong>Using /addNationality prior to adding a country</p>
+                <p> Body: {"name":"Jupiter","nationality":"Jupites","dish":"Red Eye Soup"}</p>
+                <p>Result: "404 Error: This country does not exist."</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/addNationality</p>
+                <p> Body: {"name":"Jupiter","nationality":"Jupites","dish":"Red Eye Soup"}</p>
+                <p>Result: {"name":"Jupiter","nationality":"Jupites","dish":"Red Eye Soup"}</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/addNationality</p>
+                <p>Body: {"name":"Jupiter","nationality":"Jupites","dish":""}</p>
+                <p>Result: {"message":"400 Error: Name, Nationality, and Dish are all
+                    required"}
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>/getRegion</h2>
+
+            <p><strong>Description:</strong>Returns all countries within a region of the world.</p>
+
+            <h3>Method Type: GET & HEAD</h3>
+
+            <h3>Query Params</h3>
+            <p>Continent [required]: (Dropdown Selection) - The region of the world selected to be returned</p>
+            
+
+            <h3>Returns</h3>
+            <p>A JSON array with the names of all the countries. </p>
+            <p> 
+                Format: [{'name': 'COUNTYRY NAME'}]
+            </p>
+
+            <h3>Example</h3>
+            <div>
+                <p><strong>Request:</strong>/getRegion?region=polar</p>
+                <p>Result: [{"name":"Antarctica"}]</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>/getCountry</h2>
+
+            <p><strong>Description:</strong>Returns a single country with details about it.</p>
+
+            <h3>Method Type: GET & HEAD</h3>
+
+            <h3>Query Params</h3>
+            <p>Country Names [required]: (String) - The name of the country</p>
+            
+
+            <h3>Returns</h3>
+            <p>A JSON array with the name, capital, natoinality, and currency of the country. </p>
+            <p> 
+                Format: [{"name":"NAME","capital":"CAPITAL","nationality":"NATIONALITY","currency":"CURRENCY"}]
+            </p>
+
+            <h3>Examples</h3>
+            <div>
+                <p><strong>Request:</strong>/getCountry?name=Italy</p>
+                <p>Result: [{"name":"Italy","capital":"Rome","nationality":"Italian","currency":"Euro"}]</p>
+            </div>
+
+             <div>
+                <p><strong>Request:</strong>/getCountry?name=</p>
+                <p>Result: "400 Error: A country name was not entered"</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/getCountry?name=Jupiter</p>
+                <p>Result: "404 Error: This country does not exist."</p>
+            </div>
+
+
+
+        </section>
+
+        <section>
+            <h2>/getCountriesByTimezone</h2>
+
+            <p><strong>Description:</strong>Returns all countries that share the sametimezone.</p>
+
+            <h3>Method Type: GET & HEAD</h3>
+
+            <h3>Query Params</h3>
+            <p>Time Zone Abbreviation [required]: (String) - The timezone that the country is in</p>
+
+            <h3>Returns</h3>
+            <p>A JSON array with the name countries. </p>
+            <p> 
+                Format: [{"name":"NAME"}]
+            </p>
+
+            <h3>Examples</h3>
+
+            <div>
+                <p><strong>Request:</strong>/getCountriesByTimezone?timeZone=EST</p>
+                <p>Result: [{"name":"Canada"},{"name":"Cayman Islands"},...]</p>
+            </div>
+            
+
+            <div>
+                <p><strong>Request:</strong>/getCountriesByTimezone?timeZone=</p>
+                <p>Result: '400 Error: A timezone abbreviation is required.'</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/getCountriesByTimezone?timeZone=ggel</p>
+                <p>Result: "404 Error: No found countries exist in that timezone."</p>
+            </div>
+
+
+        </section>
+
+        <section>
+            <h2>/getCurrencies</h2>
+
+            <p><strong>Description:</strong> Returns all countries that share the same currency or currency symbol.</p>
+
+            <h3>Method Type: GET & HEAD</h3>
+
+            <h3>Query Params</h3>
+            <p>Currency Name (optional): (String) - The name of the currency</p>
+            <p>Currency Symbol (optional): (String) - The symbol of the currency</p>
+            
+        
+            <h3>Returns</h3>
+            <p>A JSON array with the name of the country, the symbol, and the currency name. </p>
+            <p> 
+                Format: [{"name":"NAME","currency":"CURRENCY","symbol":"SYMBOL"}]
+            </p>
+
+            <h3>Examples</h3>
+            <div>
+                <p><strong>Request:</strong>/getCurrencies?currencyName=Euro&currencySymbol=</p>
+                <p>Result: [{"name":"Belgium","currency":"Euro","symbol":"€"},...]</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/getCurrencies?currencyName=&currencySymbol=$</p>
+                <p>Result: [{"name":"American Samoa","currency":"US Dollar","symbol":"$"},
+                    {"name":"Anguilla","currency":"East Caribbean dollar","symbol":"$"}...]
+                </p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/getCurrencies?currencyName=Australian%20Dollar&currencySymbol=$</p>
+                <p>Result: [{"name":"Australia","currency":"Australian dollar","symbol":"$"},...]</p>
+            </div>
+
+            <div>
+                <p><strong>Request:</strong>/getCurrencies?currencyName=&currencySymbol=</p>
+                <p>Result: Returns all countries with above information</p>
+            </div>
+
+
+        </section>
+
+
+
+            
+
+
+
+
+
+
+
+
+        
+
+    </div>
+
+</body>
+
+</html>

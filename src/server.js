@@ -64,14 +64,20 @@ const handleGet = (request, response, parsedURL) => {
     else if(parsedURL.pathname === '/getCountry') {
         responseHandler.getCountry(request, response);
     }
-    else if(parsedURL.pathname === '/getCountries'){
-        responseHandler.getCountries(request, response);
+    else if(parsedURL.pathname === '/getCountriesByTimezone'){
+        responseHandler.getCountriesByTimezone(request, response);
     }
     else if(parsedURL.pathname === '/getCurrencies'){
         responseHandler.getCurrencies(request, response);
     }
-    else if(parsedURL.pathname === '/'){
+    else if(parsedURL.pathname === '/' || parsedURL.pathname === '/client.html'){
         htmlHandler.getIndex(request, response);
+    }
+    else if (parsedURL.pathname === '/docs.html'){
+        htmlHandler.getDocumentation(request, response);
+    }
+    else if (parsedURL.pathname === '/docsCSS.css'){
+        htmlHandler.getDocsCSS(request, response);
     }
     else {
         responseHandler.notReal(request, response);

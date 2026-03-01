@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
-  <title>Our simple HTTP server</title>
+
+  <title>Project 1</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
 
-    const handleResponse = async (response, method) => {
+    const handleResponse = async (response, method, contentBlock) => {
 
-      const content = document.querySelector('#content');
+      const content = document.querySelector(contentBlock);
 
       switch (response.status) {
         case 200:
@@ -17,7 +21,7 @@
           break;
 
         case 201:
-          content.innerHTML = `<b>Created Country</b>`
+          content.innerHTML = `<b>Country Added!</b>`
           break;
 
         case 204:
@@ -34,14 +38,14 @@
 
       }
 
-      //if it is a head reqest, dont pring the body of the message
+      //if it is a head reqest, dont print the body of the message
       if (method !== 'head' && response.status !== 204) {
 
         const obj = await response.json();
 
-        if (obj.users) {
+        if (obj) {
 
-          const stringedData = JSON.stringify(obj.users);
+          const stringedData = JSON.stringify(obj);
           content.innerHTML += `<p>${stringedData}</p>`;
 
         }
@@ -50,20 +54,33 @@
           content.innerHTML += `<p>${obj.message}</p>`;
 
         }
-        console.log(obj);
       }
 
     };
 
+    //build the url with the proper parameters
+    const buildURL = (pageStart, param1 , param2 = '') => {
 
-    //get the url and the method select and pass that tp the response handler
-    const requestUpdate = async (userForm) => {
+      let url = pageStart;
 
-      const url = userForm.querySelector('#urlField').value;
-      const method = userForm.querySelector('#methodSelect').value;
+      if (param1){
+        url += param1;
+      }
 
-      const response = await fetch(url, {
-        method: method,
+      if (param2 !== ''){
+        url += param2;
+      }
+
+      return url;
+
+    };
+
+
+    //formulates the request to send to the handler
+    const sendGet = async (form, formMethod, id, requestURL) => {
+
+      const response = await fetch(requestURL, {
+        method: formMethod,
 
         headers: {
           'Accept': 'application/json',
@@ -71,16 +88,66 @@
 
       });
 
-      handleResponse(response, method);
+      handleResponse(response, formMethod, id);
 
     };
 
+
+
+
+    //handle request for getRegion
+    const requestRegion = (form) => {
+
+      //get information to give to the response handler
+      const method = form.querySelector('#methodSelect').value;
+      let url = buildURL('/getRegion?', `region=${form.querySelector('#urlField').value}`);
+      let contentID = '#regionContent';
+
+      sendGet(form, method, contentID, url);
+
+    };
+
+    const requestCountry = (form) => {
+
+      //build the url for the country
+      let url = buildURL('/getCountry?', `name=${form.querySelector('#gcCountryName').value}`);
+      const method = form.querySelector('#gcMethodSelect').value;
+      let contentID = '#countryContent';
+
+      sendGet(form, method, contentID, url);
+
+    };
+
+    const requestCurrency = (form) => {
+
+      let url = buildURL('/getCurrencies?', `currencyName=${document.querySelector('#currencyName').value}`,
+       `&currencySymbol=${document.querySelector('#currencySymbol').value}`);
+      const method = form.querySelector('#cyMethodSelect').value;
+      let contentID = '#currencyContent';
+
+      sendGet(form, method, contentID, url);
+
+    };
+
+    //request CountriesbyTimezone
+    const requestCountries = (form) => {
+
+      let url = buildURL('/getCountriesByTimezone?', `timeZone=${document.querySelector('#timeZone').value}`);
+      const method = form.querySelector('#gcsMethodSelect').value;
+      let contentID = '#countriesContents';
+
+      sendGet(form, method, contentID, url);
+    };
+
+
+    //send post to make a country
     const sendCountry = async (countryForm) => {
       const url = countryForm.getAttribute('action');
-      const method = countryForm.getAttribute('method');
-      const name = countryForm.querySelector('#nameField').value;
+      const method = 'POST';
+      const name = countryForm.querySelector('#cfNameField').value;
       const capital = countryForm.querySelector('#capitalField').value;
       const currency = countryForm.querySelector('#currencyField').value;
+      const contentID = '#addCountryContent';
 
       //build the data string
       let formData = JSON.stringify({ name, capital, currency });
@@ -97,19 +164,22 @@
         body: formData,
       });
 
-      handleResponse(response);
+      handleResponse(response, method, contentID);
 
     };
 
+    //send post for nationality
     const sendNationality = async (nationalityForm) => {
       const url = nationalityForm.getAttribute('action');
-      const method = nationalityForm.getAttribute('method');
+      const method = 'POST';
       const name = nationalityForm.querySelector('#nameField').value;
       const nationality = nationalityForm.querySelector('#nationalityField').value;
-      const dish = nationalityForm.querySelector('#dishField').value;
+      const dish = nationalityForm.querySelector('#nfDishField').value;
+      const contentID = '#nationalityContent';
 
       //build the data string
       let formData = JSON.stringify({ name, nationality, dish });
+      
 
       const response = await fetch(url, {
         method: method,
@@ -123,38 +193,64 @@
         body: formData,
       });
 
-      handleResponse(response);
+      handleResponse(response, method, contentID);
 
     };
 
     const init = () => {
+
+      //get all the forms
       const countryForm = document.querySelector('#countryForm');
       const nationalityForm = document.querySelector('#nationalityForm');
       const regionForm = document.querySelector('#regionForm');
+      const getCountryForm = document.querySelector('#getCountry');
+      const getCountriesForm = document.querySelector('#getCountries');
+      const getCurrencyForm = document.querySelector('#getCurrencies');
 
       //post requests: add country and nationality
       const addCountry = (e) => {
         e.preventDefault();
         sendCountry(countryForm);
         return false;
-      }
+      };
 
       const addNationality = (e) => {
         e.preventDefault();
         sendNationality(nationalityForm);
         return false;
-      }
-
+      };
+      //-------get requests----------
       const getRegion = (e) => {
         e.preventDefault();
-        requestUpdate(regionForm);
+        requestRegion(regionForm);
+        return false;
+      };
+
+      const getCountry = (e) => {
+        e.preventDefault();
+        requestCountry(getCountryForm);
         return false;
       }
 
+      const getCountries = (e) => {
+        e.preventDefault();
+        requestCountries(getCountriesForm);
+        return false;
+      }
+
+      const getCurrency = (e) => {
+        e.preventDefault();
+        requestCurrency(getCurrencyForm);
+        return false;
+      }
+
+      //Event Listeners for all the buttons
       countryForm.addEventListener('submit', addCountry);
       nationalityForm.addEventListener('submit', addNationality);
       regionForm.addEventListener('submit', getRegion);
-      // userForm.addEventListener('submit', getUsers); //call get users when the button is clicked
+      getCountryForm.addEventListener('submit', getCountry);
+      getCountriesForm.addEventListener('submit', getCountries);
+      getCurrencyForm.addEventListener('submit', getCurrency);
 
 
     };
@@ -165,50 +261,57 @@
 </head>
 
 <body>
-  <section id="top">
-    <h1>Country API Application</h1>
+    <h1>Country API Application by Jarin Moses</h1>
+    <a href="docs.html">View the Documentation Here</a>
 
+    <hr>
     <div id="addCountryBlock">
-      <h3>/addCountry</h3>
-      <h4>Type: POST</h4>
-      <h5>Create or the information of a country </h5>
-
-
+      <h2>/addCountry</h2>
+      <h3>Type: POST</h3>
+      <h3>Create a Country! </h3>
 
       <form id="countryForm" action="/addCountry" method="post">
         <label for="name">Country Name: </label>
-        <input id="nameField" type="text" name="name" />
+        <input id="cfNameField" type="text" name="name" title="Enter Country" />
         <br>
         <label for="capital">Capital: </label>
-        <input id="capitalField" type="text" name="capital" />
+        <input id="capitalField" type="text" name="capital" title="Enter Capital" />
         <br>
         <label for="currency">Currency: </label>
-        <input id="currencyField" type="text" name="currency" />
+        <input id="currencyField" type="text" name="currency" title="Enter Currency" />
         <br>
+
         <input type="submit" value="Send Request" />
       </form>
+
+      <section id="addCountryContent">
+      </section>
 
     </div>
 
     <hr>
 
     <div id="addNationalityBlock">
-      <h3>/addNationality</h3>
-      <h4>Type: POST</h4>
-      <h5>Create/Update the nationality of a country and/or give a country a national dish </h5>
+      <h2>/addNationality</h2>
+      <h3>Type: POST</h3>
+      <h3>Create/Update the nationality of a country and/or give a country a national dish </h3>
 
       <form id="nationalityForm" action="/addNationality" method="post">
         <label for="name">Country Name: </label>
-        <input id="nameField" type="text" name="name" />
+        <input id="nameField" type="text" name="name" title="Enter Country" />
         <br>
         <label for="nationality">Nationality: </label>
-        <input id="nationalityField" type="text" name="nationality" />
+        <input id="nationalityField" type="text" name="nationality" title="Enter Nationality" />
         <br>
         <label for="dish">National Dish: </label>
-        <input id="dishField" type="text" name="dish" />
+        <input id="nfDishField" type="text" name="dish" title="Enter Dish" />
         <br>
+
         <input type="submit" value="Send Request" />
       </form>
+
+       <section id="nationalityContent">
+       </section>
 
     </div>
 
@@ -216,27 +319,32 @@
     <hr>
 
     <div id="getRegionBlock">
-      <h3>/getReigon</h3>
-      <h4>Type: GET</h4>
-      <h5>Get all the countries from a specific region </h5>
+      <h2>/getReigon</h2>
+      <h3>Type: GET & HEAD</h3>
+      <h3>Get all the countries from a specific region </h3>
 
       <form id="regionForm" action="/getRegion" method="get">
-        <select id='urlField'>
+        <select id='urlField' title="Select Region">
           <option value='americas'>Americas</option>
           <option value='africa'>Africa </option>
-          <option value='antartica'>Antartica</option>
           <option value='asia'>Asia</option>
-          <option value='eurpoe'>Eurpoe</option>
+          <option value='europe'>Eurpoe</option>
           <option value='oceania'>Oceania</option>
+          <option value='polar'>Polar</option>
         </select>
+        <br>
 
-        <select id="methodSelect">
+        <select id="methodSelect" title="Select Method">
           <option value="get">GET</option>
           <option value="head">HEAD</option>
         </select>
-
+        <br>
 
         <input type="submit" value="Send Request" />
+
+        <section id="regionContent">
+        </section>
+
       </form>
 
 
@@ -246,39 +354,55 @@
     <hr>
 
     <div id="getCountryBlock">
-      <h3>/getCountry</h3>
-      <h4>Type: GET</h4>
-      <h5>Get information about a single country </h5>
+      <h2>/getCountry</h2>
+      <h3>Type: GET & HEAD</h3>
+      <h3>Get information about a single country </h3>
 
       <form id="getCountry" action="/getCountry" method="get">
 
         <label for="name">Country Name: </label>
-        <input id="countryName" type="text" name="name" />
+        <input id="gcCountryName" type="text" name="name" title="Enter Name" />
+        <br>
+
+        <select id="gcMethodSelect" title="Select Method">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
+        <br>
+
         <input type="submit" value="Send Request" />
 
       </form>
+
+      <section id="countryContent">
+
+      </section>
 
     </div>
 
     <hr>
 
     <div id="getCountriesBlock">
-      <h3>/getCountries</h3>
-      <h4>Type: GET</h4>
-      <h5>Gets all the countries</h5>
+      <h2>/getCountriesByTimezone</h2>
+      <h3>Type: GET & HEAD</h3>
+      <h3>Gets all countries within a timezone</h3>
 
       <form id="getCountries" action="/getCountries" method="get">
 
-        <label for="name">Country Name: </label>
-        <input id="countryName" type="text" name="name" />
-        <br>
         <label for="timeZone">Time Zone (Abbreviation): </label>
         <input id="timeZone" type="text" name="timeZone" />
         <br>
-        <label for="dish">National Dish: </label>
-        <input id="dishField" type="text" name="dish" />
+        
+        <select id="gcsMethodSelect" title="Select Method">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
         <br>
+
         <input type="submit" value="Send Request" />
+
+        <section id="countriesContents">
+        </section>
 
       </form>
 
@@ -288,9 +412,9 @@
     <hr>
 
     <div id="getCurrenciesBlock">
-      <h3>/getCurrencies</h3>
-      <h4>Type: GET</h4>
-      <h5>Returns all countries that use the same currency</h5>
+      <h2>/getCurrencies</h2>
+      <h3>Type: GET & HEAD</h3>
+      <h3>Returns all countries that use the same currency</h3>
 
       <form id="getCurrencies" action="/getCurrencies" method="get">
 
@@ -299,19 +423,23 @@
         <br>
         <label for="currencySymbol">Currency Symbol: </label>
         <input id="currencySymbol" type="text" name="currencySymbol" />
+
+        <select id="cyMethodSelect" title="Select Method">
+          <option value="get">GET</option>
+          <option value="head">HEAD</option>
+        </select>
+
         <br>
+
         <input type="submit" value="Send Request" />
 
       </form>
 
+      <section id="currencyContent">
+      </section>
 
     </div>
 
-
-    </form>
-  </section>
-  <section id="content">
-  </section>
 </body>
 
 </html>
